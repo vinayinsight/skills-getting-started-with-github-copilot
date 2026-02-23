@@ -11,7 +11,7 @@ from fastapi.responses import RedirectResponse
 import os
 from pathlib import Path
 
-app = FastAPI(title="Mergington High School API",
+app = FastAPI(title="Mergington1 High School API",
               description="API for viewing and signing up for extracurricular activities")
 
 # Mount the static files directory
@@ -21,7 +21,7 @@ app.mount("/static", StaticFiles(directory=os.path.join(Path(__file__).parent,
 
 # In-memory activity database
 activities = {
-    "Chess Club": {
+    "Chess Club1": {
         "description": "Learn strategies and compete in chess tournaments",
         "schedule": "Fridays, 3:30 PM - 5:00 PM",
         "max_participants": 12,
@@ -37,7 +37,43 @@ activities = {
         "description": "Physical education and sports activities",
         "schedule": "Mondays, Wednesdays, Fridays, 2:00 PM - 3:00 PM",
         "max_participants": 30,
-        "participants": ["john@mergington.edu", "olivia@mergington.edu"]
+    },        "participants": ["john@mergington.edu", "olivia@mergington.edu"]
+
+    "Basketball Team": {
+        "description": "Team practices, drills, and interschool basketball games",
+        "schedule": "Mondays and Thursdays, 4:00 PM - 5:30 PM",
+        "max_participants": 15,
+        "participants": ["liam@mergington.edu", "noah@mergington.edu"]
+    },
+    "Soccer Club": {
+        "description": "Soccer training sessions focused on teamwork and fitness",
+        "schedule": "Tuesdays and Fridays, 4:00 PM - 5:30 PM",
+        "max_participants": 18,
+        "participants": ["ava@mergington.edu", "isabella@mergington.edu"]
+    },
+    "Drama Club": {
+        "description": "Acting workshops and stage performance practice",
+        "schedule": "Wednesdays, 3:30 PM - 5:00 PM",
+        "max_participants": 25,
+        "participants": ["mia@mergington.edu", "charlotte@mergington.edu"]
+    },
+    "Art Workshop": {
+        "description": "Explore drawing, painting, and mixed media art projects",
+        "schedule": "Thursdays, 3:30 PM - 5:00 PM",
+        "max_participants": 20,
+        "participants": ["amelia@mergington.edu", "harper@mergington.edu"]
+    },
+    "Debate Club": {
+        "description": "Develop public speaking and critical argumentation skills",
+        "schedule": "Mondays, 3:30 PM - 4:45 PM",
+        "max_participants": 16,
+        "participants": ["elijah@mergington.edu", "james@mergington.edu"]
+    },
+    "Science Olympiad": {
+        "description": "Hands-on science challenges and competition preparation",
+        "schedule": "Wednesdays and Fridays, 3:30 PM - 5:00 PM",
+        "max_participants": 14,
+        "participants": ["evelyn@mergington.edu", "abigail@mergington.edu"]
     }
 }
 
@@ -61,7 +97,9 @@ def signup_for_activity(activity_name: str, email: str):
 
     # Get the specific activity
     activity = activities[activity_name]
-
+    # Validate student is not already signed up
+    if email in activity["participants"]:
+        raise HTTPException(status_code=400, detail="Student already signed up for this activity")
     # Add student
     activity["participants"].append(email)
     return {"message": f"Signed up {email} for {activity_name}"}
