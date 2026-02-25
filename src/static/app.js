@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const activitySelect = document.getElementById("activity");
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
+  let isRefreshingActivities = false;
+  const AUTO_REFRESH_INTERVAL_MS = 5000;
 
   function escapeHtml(value) {
     return value
@@ -15,6 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to fetch activities from API
   async function fetchActivities() {
+    if (isRefreshingActivities) {
+      return;
+    }
+
+    isRefreshingActivities = true;
     try {
       const response = await fetch("/activities", { cache: "no-store" });
       const activities = await response.json();
@@ -61,6 +68,8 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
+    } finally {
+      isRefreshingActivities = false;
     }
   }
 
@@ -148,4 +157,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize app
   fetchActivities();
+  setInterval(fetchActivities, AUTO_REFRESH_INTERVAL_MS);
 });
